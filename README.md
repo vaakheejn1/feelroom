@@ -144,5 +144,3 @@ S13P11D208/
     -   **Frontend**: `http://localhost:5173`
     -   **Backend API**: `http://localhost:8080/swagger-ui/index.html`
 
-## 팀원 역할 분담
-![role](./readme/role.png)
