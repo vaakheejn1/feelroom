@@ -1,0 +1,60 @@
+# Python
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.so
+
+# Virtual environments
+venv/
+.venv/
+env/
+.env
+
+# Package management
+pip-log.txt
+.tox
+.coverage
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.log
+
+# Git
+.git
+.gitignore
+
+# IDEs
+.mypy_cache
+.pytest_cache
+.DS_Store
+.vscode
+.idea
+*.swp
+*.swo
+
+# AI 관련 대용량 파일들 (EC2에서 마운트됨)
+data/
+models/
+*.pkl
+*.model
+*.bin
+*.h5
+*.onnx
+*.joblib
+*.pt
+*.pth
+
+# 문서 및 개발 파일들
+README.md
+*.md
+docs/
+tests/
+
+# 임시 파일들
+*.tmp
+*.temp
+*.bak
+logs/

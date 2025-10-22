@@ -1,0 +1,40 @@
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/test_db?useSSL=false&serverTimezone=UTC&characterEncoding=UTF8&allowPublicKeyRetrieval=true
+    username: root
+    password: root
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.MySQLDialect
+        hbm2ddl:
+          auto: create-drop
+        javax:
+          persistence:
+            query:
+              validation:
+                enabled: false
+
+tmdb:
+  api:
+    key: 3c3356b9a0daa1dbb9e21cda8b7b5d30 # 본인의 TMDB API 키로 변경
+    base-url: https://api.themoviedb.org/3
+    call-delay-ms: 200 # 각 API 호출 간 지연 시간 (밀리초), 예: 200ms
+  image:
+    base-url: https://image.tmdb.org/t/p/original # 포스터 이미지의 기본 URL
+
+jwt:
+  secret:
+    key: MXRrYXRqZGZrZGxkaHM3d21kbnRtZGdrcmxmM3ZsZmZuYXZsZmZuYTIwOA
+  token:
+    access-expiration-time: 3600000
+
+logging:
+  level:
+    org.hibernate.SQL: debug
+    com.d208.feelroom: INFO

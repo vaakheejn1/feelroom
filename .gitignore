@@ -1,0 +1,11 @@
+# .gitignore 파일 내용
+.idea/
+*.iml
+*.ipr
+*.iws
+build/
+.gradle/
+*.log
+# STS 관련
+/.metadata/
+# etc...

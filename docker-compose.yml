@@ -1,0 +1,99 @@
+version: '3.8'
+
+services:
+  redis:
+    image: redis:7-alpine
+    container_name: movie-redis
+    ports:
+      - "127.0.0.1:6379:6379"
+    command: redis-server
+    volumes:
+      - redis_data:/data
+    networks:
+      - movie-network
+    restart: unless-stopped
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.15.0
+    container_name: local-elasticsearch
+    ports:
+     - "9200:9200"
+    environment:
+      - discovery.type=single-node
+      - ES_JAVA_OPTS=-Xms512m -Xmx1g
+      - xpack.security.enabled=false
+    networks:
+      - movie-network
+    restart: unless-stopped
+    volumes:
+      - elasticsearch_data:/usr/share/elasticsearch/data
+
+  fastapi:
+    build: 
+      context: ./ai/fastapi
+      dockerfile: Dockerfile
+    container_name: movie-fastapi
+    ports:
+      - "8000:8000"
+    volumes:
+      - /home/ubuntu/ai-data:/app/data:ro
+      - /home/ubuntu/ai-models:/app/models
+    environment:
+      - DATA_PATH=/app/data
+      - TRANSFORMERS_CACHE=/app/models
+      - HF_HOME=/app/models
+    networks:
+      - movie-network
+    restart: unless-stopped
+
+  backend:
+    build: 
+      context: ./backend/feelroom
+      dockerfile: Dockerfile
+    container_name: movie-backend
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://i13D208.p.ssafy.io:3306/movie_recommendation_db
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=gongtong208gumi
+      - SPRING_REDIS_HOST=movie-redis 
+      - SPRING_REDIS_PORT=6379
+      - ELASTICSEARCH_HOST=local-elasticsearch 
+      - ELASTICSEARCH_PORT=9200
+      - FASTAPI_URL=http://movie-fastapi:8000
+      - JWT_SECRET=${JWT_SECRET}
+      - SPRING_PROFILES_ACTIVE=prod
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}       
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY} 
+      - AWS_REGION=${AWS_REGION}                    
+    ports:
+      - "8081:8080"
+    depends_on:
+      - redis
+      - elasticsearch
+      - fastapi
+    networks:
+      - movie-network
+    restart: unless-stopped
+
+  frontend:
+    build: 
+      context: ./frontend/feelroom
+      dockerfile: Dockerfile
+    container_name: movie-frontend
+    ports:
+      - "3000:3000"
+    environment:
+      - REACT_APP_API_URL=http://localhost:8081 
+    depends_on:
+      - backend
+    networks:
+      - movie-network
+    restart: unless-stopped
+
+volumes:
+  redis_data:
+  elasticsearch_data:
+
+networks:
+  movie-network:
+    driver: bridge
